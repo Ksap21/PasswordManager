@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import messagebox
 import random
 import string
-<<<<<<< HEAD
 import hashlib
 import sys
 import os
@@ -12,7 +11,8 @@ def restart_app():
     os.execv(sys.executable, ['python3'] + sys.argv)  # Restart the script
 
 
-
+retrieve_password_label = None  
+pinCode="1two3"
 # Function to generate a password
 def generate_password(length, exclude_chars):
     if length > 30:
@@ -48,22 +48,25 @@ def save_to_file(password, title):
         messagebox.showerror("Error", f"Failed to save password: {e}")
 
 # Function to retrieve a password
-<<<<<<< HEAD
+
 def copy_retrieved_password():
-    password = retrieve_password_label.cget("text").replace("Retrieved Password: ", "")
-    if password.strip():
-        root.clipboard_clear()
-        root.clipboard_append(password)
-        root.update()  # Keeps it on clipboard
-        messagebox.showinfo("Copied", "Password copied to clipboard!")
-    else:
-        messagebox.showerror("Error", "No password to copy.")
-=======
+    global retrieve_password_label
+    if retrieve_password_label:
+        password = retrieve_password_label.cget("text").replace("Retrieved Password: ", "")
+        if password.strip():
+            root.clipboard_clear()
+            root.clipboard_append(password)
+            root.update()
+            messagebox.showinfo("Copied", "Password copied to clipboard!")
+        else:
+            messagebox.showerror("Error", "No password to copy.")
+
+
 def retrieve_password(title, pin):
     if not title.strip():
         messagebox.showerror("Error", "Title is required!")
         return
-    if pin != "1234":
+    if pin != pinCode:
         messagebox.showerror("Error", "Incorrect PIN!")
         return
 
@@ -93,7 +96,7 @@ def update_password(title, pin, new_password):
     if not title.strip():
         messagebox.showerror("Error", "Title is required!")
         return
-    if pin != "1234":
+    if pin != pinCode:
         messagebox.showerror("Error", "Incorrect PIN!")
         return
     if not new_password.strip():
@@ -139,7 +142,47 @@ def check_duplicate_title(title):
     except FileNotFoundError:
         return False
 
-<<<<<<< HEAD
+# Function to delete entry
+def delete_password(title, pin):
+    if not title.strip():
+        messagebox.showerror("Error", "Title is required!")
+        return
+    if pin != pinCode:
+        messagebox.showerror("Error", "Incorrect PIN!")
+        return
+
+    try:
+        with open("Credentials.txt", "r") as file:
+            data = file.readlines()
+
+        new_data = []
+        skip = False
+        found = False
+
+        for line in data:
+            if line.startswith(f"Title: {title}"):
+                skip = True
+                found = True
+                continue
+            if skip and line.startswith("Password:"):
+                continue
+            if skip and line.strip() == "---":
+                skip = False
+                continue
+            if not skip:
+                new_data.append(line)
+
+        if found:
+            with open("Credentials.txt", "w") as file:
+                file.writelines(new_data)
+            messagebox.showinfo("Success", f"Password entry for '{title}' deleted.")
+        else:
+            messagebox.showerror("Error", "No matching title found.")
+
+    except FileNotFoundError:
+        messagebox.showerror("Error", "Credentials file not found!")
+
+
 # Login Functions
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
@@ -191,6 +234,12 @@ def go_back():
     retrieve_frame.pack_forget()
     update_frame.pack_forget()
     choice_frame.pack(pady=20)
+    delete_frame.pack_forget()
+
+def show_delete_screen():
+    choice_frame.pack_forget()
+    delete_frame.pack(pady=20)
+
 
 def on_generate_button_click():
     try:
@@ -215,40 +264,12 @@ def on_generate_button_click():
     except ValueError:
         messagebox.showerror("Invalid Input", "Please enter a valid number for the password length.")
 
+
+
 def on_retrieve_button_click():
-<<<<<<< HEAD
     title = retrieve_title_entry.get().strip()
     pin = retrieve_pin_entry.get()
-
-    if not title:
-        messagebox.showerror("Error", "Title is required!")
-        return
-    if pin != "1234":
-        messagebox.showerror("Error", "Incorrect PIN!")
-        return
-
-    try:
-        with open("Credentials.txt", "r") as file:
-            data = file.readlines()
-
-        found, stored_password = False, None
-
-        for i in range(len(data)):
-            if f"Title: {title}" in data[i]:
-                found = True
-                stored_password = data[i + 1].replace("Password: ", "").strip()
-                break
-
-        if found and stored_password:
-            retrieve_password_label.config(text=f"Retrieved Password: {stored_password}")
-        else:
-            messagebox.showerror("Error", "No matching password found!")
-
-    except FileNotFoundError:
-        messagebox.showerror("Error", "Credentials file not found!")
-
-
-    retrieve_password(retrieve_title_entry.get().strip(), retrieve_pin_entry.get())
+    retrieve_password(title, pin)
 
 
 def on_update_button_click():
@@ -260,7 +281,8 @@ root.title("Password Manager")
 root.geometry("600x500")
 root.config(bg="#2C2F33")  # Dark background
 
-<<<<<<< HEAD
+
+
 
 
 
@@ -310,7 +332,9 @@ def login():
     pwd = password_entry.get()
     if check_login(user, pwd):
         login_frame.pack_forget()
-        choice_frame.pack(pady=20)
+        choice_frame.pack(pady=20)  
+
+       
     else:
         messagebox.showerror("Login Failed", "Incorrect username or password.")
 
@@ -329,16 +353,12 @@ login_frame.pack(pady=40)
 
 
 
-# Main choice frame
-choice_frame = tk.Frame(root, bg="#2C2F33")
-choice_frame.pack(pady=20)
-
 
 tk.Label(choice_frame, text="Password Manager", font=("Arial", 18, "bold"), fg="white", bg="#2C2F33").pack(pady=10)
 tk.Button(choice_frame, text="Create Password", command=show_create_screen, **button_style).pack(pady=10)
 tk.Button(choice_frame, text="Retrieve Password", command=show_retrieve_screen, **button_style).pack(pady=10)
 tk.Button(choice_frame, text="Update Password", command=show_update_screen, **button_style).pack(pady=10)
-<<<<<<< HEAD
+tk.Button(choice_frame, text="Delete Password", command=show_delete_screen, **button_style).pack(pady=10)
 tk.Button(choice_frame, text="Restart App", command=restart_app, **button_style).pack(pady=10)
 
 
@@ -378,7 +398,8 @@ tk.Button(retrieve_frame, text="Retrieve Password", command=on_retrieve_button_c
 
 retrieve_password_label = tk.Label(retrieve_frame, text="", font=("Arial", 12), fg="white", bg="#2C2F33")
 retrieve_password_label.pack()
-<<<<<<< HEAD
+
+
 tk.Button(retrieve_frame, text="Copy Password", command=copy_retrieved_password, **button_style).pack(pady=5)
 tk.Button(retrieve_frame, text="Go Back", command=go_back, **button_style).pack(pady=5)
 
@@ -401,5 +422,20 @@ update_new_password_entry.pack()
 
 tk.Button(update_frame, text="Update Password", command=on_update_button_click, **button_style).pack(pady=10)
 tk.Button(update_frame, text="Go Back", command=go_back, **button_style).pack(pady=5)
+
+
+# delete frame UI
+delete_frame = tk.Frame(root, bg="#2C2F33")
+
+tk.Label(delete_frame, text="Title (Required):", font=("Arial", 12), fg="white", bg="#2C2F33").pack()
+delete_title_entry = tk.Entry(delete_frame, **entry_style)
+delete_title_entry.pack()
+
+tk.Label(delete_frame, text="Enter PIN:", font=("Arial", 12), fg="white", bg="#2C2F33").pack()
+delete_pin_entry = tk.Entry(delete_frame, show="*", **entry_style)
+delete_pin_entry.pack()
+
+tk.Button(delete_frame, text="Delete Entry", command=lambda: delete_password(delete_title_entry.get().strip(), delete_pin_entry.get()), **button_style).pack(pady=10)
+tk.Button(delete_frame, text="Go Back", command=go_back, **button_style).pack(pady=5)
 
 root.mainloop()
