@@ -10,7 +10,10 @@ This is a simple yet functional password manager built with Python and Tkinter. 
 
 ## 🧠 Features
 
+<<<<<<< HEAD
 - Needs User to login with their respective credentials.
+=======
+>>>>>>> 4ce7ebd8719cc29dd5035a2899617db3f2cd7d7a
 - Password generation with custom exclusions
 - Save passwords to a local file (`Credentials.txt`)
 - Retrieve saved passwords by title (PIN protected)

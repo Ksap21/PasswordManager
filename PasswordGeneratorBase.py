@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import random
 import string
+<<<<<<< HEAD
 import hashlib
 import sys
 import os
@@ -9,6 +10,7 @@ import os
 def restart_app():
     root.destroy()  # Close the current window
     os.execv(sys.executable, ['python3'] + sys.argv)  # Restart the script
+
 
 
 # Function to generate a password
@@ -46,6 +48,7 @@ def save_to_file(password, title):
         messagebox.showerror("Error", f"Failed to save password: {e}")
 
 # Function to retrieve a password
+<<<<<<< HEAD
 def copy_retrieved_password():
     password = retrieve_password_label.cget("text").replace("Retrieved Password: ", "")
     if password.strip():
@@ -55,6 +58,35 @@ def copy_retrieved_password():
         messagebox.showinfo("Copied", "Password copied to clipboard!")
     else:
         messagebox.showerror("Error", "No password to copy.")
+=======
+def retrieve_password(title, pin):
+    if not title.strip():
+        messagebox.showerror("Error", "Title is required!")
+        return
+    if pin != "1234":
+        messagebox.showerror("Error", "Incorrect PIN!")
+        return
+
+    try:
+        with open("Credentials.txt", "r") as file:
+            data = file.readlines()
+
+        found, stored_password = False, None
+
+        for i in range(len(data)):
+            if f"Title: {title}" in data[i]:
+                found = True
+                stored_password = data[i + 1].replace("Password: ", "").strip()
+                break
+
+        if found and stored_password:
+            retrieve_password_label.config(text=f"Retrieved Password: {stored_password}")
+        else:
+            messagebox.showerror("Error", "No matching password found!")
+
+    except FileNotFoundError:
+        messagebox.showerror("Error", "Credentials file not found!")
+
 
 # Function to update a password
 def update_password(title, pin, new_password):
@@ -107,6 +139,7 @@ def check_duplicate_title(title):
     except FileNotFoundError:
         return False
 
+<<<<<<< HEAD
 # Login Functions
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
@@ -183,6 +216,7 @@ def on_generate_button_click():
         messagebox.showerror("Invalid Input", "Please enter a valid number for the password length.")
 
 def on_retrieve_button_click():
+<<<<<<< HEAD
     title = retrieve_title_entry.get().strip()
     pin = retrieve_pin_entry.get()
 
@@ -214,6 +248,9 @@ def on_retrieve_button_click():
         messagebox.showerror("Error", "Credentials file not found!")
 
 
+    retrieve_password(retrieve_title_entry.get().strip(), retrieve_pin_entry.get())
+
+
 def on_update_button_click():
     update_password(update_title_entry.get().strip(), update_pin_entry.get(), update_new_password_entry.get())
 
@@ -223,6 +260,8 @@ root.title("Password Manager")
 root.geometry("600x500")
 root.config(bg="#2C2F33")  # Dark background
 
+<<<<<<< HEAD
+
 
 
 # Custom button style
@@ -231,6 +270,8 @@ button_style = {
     "fg": "white",
     "bg": "#4CAF50",
     "activebackground": "#45A049",
+    "bg": "#7289DA",
+    "activebackground": "#5A6CA8",
     "activeforeground": "white",
     "bd": 3,
     "relief": "ridge",
@@ -245,6 +286,7 @@ entry_style = {
     "bd": 3,
     "relief": "ridge"
 }
+
 # Login Style
 # Login Frame
 login_frame = tk.Frame(root, bg="#2C2F33")
@@ -286,11 +328,19 @@ choice_frame = tk.Frame(root, bg="#2C2F33")
 login_frame.pack(pady=40)
 
 
+
+# Main choice frame
+choice_frame = tk.Frame(root, bg="#2C2F33")
+choice_frame.pack(pady=20)
+
+
 tk.Label(choice_frame, text="Password Manager", font=("Arial", 18, "bold"), fg="white", bg="#2C2F33").pack(pady=10)
 tk.Button(choice_frame, text="Create Password", command=show_create_screen, **button_style).pack(pady=10)
 tk.Button(choice_frame, text="Retrieve Password", command=show_retrieve_screen, **button_style).pack(pady=10)
 tk.Button(choice_frame, text="Update Password", command=show_update_screen, **button_style).pack(pady=10)
+<<<<<<< HEAD
 tk.Button(choice_frame, text="Restart App", command=restart_app, **button_style).pack(pady=10)
+
 
 # Create Password Frame
 create_frame = tk.Frame(root, bg="#2C2F33")
@@ -328,8 +378,10 @@ tk.Button(retrieve_frame, text="Retrieve Password", command=on_retrieve_button_c
 
 retrieve_password_label = tk.Label(retrieve_frame, text="", font=("Arial", 12), fg="white", bg="#2C2F33")
 retrieve_password_label.pack()
+<<<<<<< HEAD
 tk.Button(retrieve_frame, text="Copy Password", command=copy_retrieved_password, **button_style).pack(pady=5)
 tk.Button(retrieve_frame, text="Go Back", command=go_back, **button_style).pack(pady=5)
+
 
 
 # Update Password Frame
