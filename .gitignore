@@ -1,0 +1,3 @@
+# Ignore credentials file
+Credentials.txt
+__pycache__/
